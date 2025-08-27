@@ -170,10 +170,10 @@ class Config:
         "https://i.ibb.co/0jRMxrFB/BY-Admiregirls-su-Admiregirls-su-271.jpg"
     ]
     IMG_HOME_PREVIEWS = [
-        "https://i.ibb.co/HLk31HP1/BY-Admiregirls-su-Admiregirls-su-089.jpg",
-        "https://ibb.co/fGD0zvmY",
-        "https://ibb.co/2YYh55Hf",
-        "https://ibb.co/tSVc9Rzg"
+        "https://i.ibb.co/5Gfw3hQ/home-prev-1.jpg",
+        "https://i.ibb.co/vkXch6N/home-prev-2.jpg",
+        "https://i.ibb.co/v4s5fnW/home-prev-3.jpg",
+        "https://i.ibb.co/7gVtGkz/home-prev-4.jpg"
     ]
     SOCIAL_LINKS = {
         "instagram": "https://instagram.com/myllealves",
@@ -2007,7 +2007,8 @@ class ChatService:
                                                 key=f"cta_button_{hash(msg['content'])}",
                                                 use_container_width=True,
                                                 type="primary"):
-                                        st.session_state.current_page = cta_data.get("target", "offers")
+                                        # MODIFICAÇÃO APLICADA AQUI
+                                        st.session_state.current_page = "offers"
                                         save_persistent_data()
                                         st.rerun()
                     except:
@@ -2296,4 +2297,3 @@ ChatService._show_chat_start_screen = _show_chat_start_screen
 
 if __name__ == "__main__":
     main()
-
