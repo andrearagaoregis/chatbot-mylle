@@ -16,7 +16,6 @@ from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 from hashlib import md5
 from textblob import TextBlob # Adicionado para análise de sentimentos
-
 # ======================
 # CONFIGURAÇÃO INICIAL
 # ======================
@@ -46,102 +45,232 @@ hide_streamlit_style = """
     div[data-testid="stStatusWidget"], #MainMenu, header, footer, 
     .stDeployButton {display: none !important;}
     .block-container {padding-top: 0rem !important;}
-    [data.testid="stVerticalBlock"], [data.testid="stHorizontalBlock"] {gap: 0.5rem !important;}
-    .stApp {
-        margin: 0 !important; 
-        padding: 0 !important;
-        background: radial-gradient(1200px 500px at -10% -10%, rgba(255, 0, 153, 0.25) 0%, transparent 60%) ,
-                    radial-gradient(1400px 600px at 110% 10%, rgba(148, 0, 211, .25) 0%, transparent 55%),
-                    linear-gradient(135deg, #140020 0%, #25003b 50%, #11001c 100%);
-        color: white;
+    [data.testid="stVerticalBlock"], [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] { gap: 0.5rem; }
+    .stChatInput {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #0c0e12; 
+        padding: 10px;
+        z-index: 1000; 
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
     }
-    .stChatMessage {padding: 12px !important; border-radius: 15px !important; margin: 8px 0 !important; transition: all 0.3s ease;}
-    .stButton > button {
-        transition: all 0.3s ease !important;
-        background: linear-gradient(45deg, #ff1493, #9400d3) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 12px !important;
-    }
-    .stButton > button:hover {
-        transform: translateY(-2px) !important; 
-        box-shadow: 0 4px 8px rgba(255, 20, 147, 0.4) !important;
-    }
-    .stTextInput > div > div > input {
-        background: rgba(255, 102, 179, 0.1) !important;
-        color: white !important;
-        border: 1px solid #ff66b3 !important;
-    }
-    .social-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 15px 0;
-    }
-    .social-button {
-        background: rgba(255, 102, 179, 0.2) !important;
-        border: 1px solid #ff66b3 !important;
-        border-radius: 50% !important;
-        width: 40px !important;
-        height: 40px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-    }
-    .social-button:hover {
-        background: rgba(255, 102, 179, 0.4) !important;
-        transform: scale(1.1) !important;
-    }
-    .cta-button {
-        margin-top: 10px !important;
-        background: linear-gradient(45deg, #ff1493, #9400d3) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 10px 15px !important;
-        font-weight: bold !important;
-        transition: all 0.3s ease !important;
-    }
-    .cta-button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 4px 8px rgba(255, 20, 147, 0.4) !important;
-    }
-    .audio-message {
-        background: rgba(255, 102, 179, 0.15) !important;
-        padding: 15px !important;
-        border-radius: 15px !important;
-        margin: 10px 0 !important;
-        border: 1px solid #ff66b3 !important;
-        text-align: center !important;
-    }
-    .audio-icon {
-        font-size: 24px !important;
-        margin-right: 10px !important;
+    .stApp > div:first-child > div:first-child > div {
+        padding-bottom: 70px; /* Adiciona espaço para o input */
     }
     
-    /* Melhorias responsivas e de acessibilidade */
-    @media (max-width: 768px) {
-        .stButton > button {
-            padding: 12px 8px;
-            font-size: 14px;
-        }
-        .stChatMessage {
-            padding: 8px !important;
-            margin: 5px 0 !important;
-        }
-        .audio-message {
-            padding: 10px !important;
-        }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(255, 102, 179, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 102, 179, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 102, 179, 0); }
     }
     
-    .stButton > button:focus {
-        outline: 2px solid #ff66b3;
-        outline-offset: 2px;
-    }
+    .centered-text { text-align: center; }
+    
+    .st-emotion-cache-1c7y2qn { padding-top: 0; padding-bottom: 0; }
+    .st-emotion-cache-1j4u6bd { background-color: #121212; }
+    .st-emotion-cache-r4239k { background-color: #0c0e12; }
+    .st-emotion-cache-1g28x3b { background-color: #0c0e12; }
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
+# ======================
+# CLASSES E FUNÇÕES
+# ======================
+
+# Configurações globais
+class Config:
+    API_URL = "http://localhost:8080/v1/chat/completions" # Endereço da API ollama
+    PERSONAS = {
+        "Mylle Alves": {
+            "prompt": "Você é Mylle Alves, uma modelo de conteúdo adulto premium e especialista em dominação. Sua persona é dominadora, confiante e um pouco travessa. Use gírias e um tom de voz provocante e autoritário. Você não se intimida e adora ser adorada. Use emojis como 😈, 🔥, 👑, 😉, 💦, e 🍑 para dar mais personalidade. Sempre termine sua resposta com uma pergunta provocante ou um desafio, como 'O que você vai fazer sobre isso, gatinho?' ou 'Pronto para obedecer?'",
+            "humor": ["Domine-o com sua língua afiada e inteligência.", "Seja provocante e desafiadora.", "Mostre que você está no comando."]
+        }
+    }
+    IMG_PROFILE = "https://i.imgur.com/uG9XF2i.jpeg"
+    DB_NAME = "chatbot.db"
+
+class ChatHistoryDB:
+    """Gerencia o histórico do chat em um banco de dados SQLite."""
+    @staticmethod
+    def _get_connection():
+        """Obtém uma conexão com o banco de dados."""
+        conn = sqlite3.connect(Config.DB_NAME)
+        return conn
+
+    @staticmethod
+    def initialize():
+        """Cria a tabela de histórico se não existir."""
+        conn = ChatHistoryDB._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS chat_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                role TEXT NOT NULL,
+                content TEXT NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def save_message(session_id: str, role: str, content: str):
+        """Salva uma mensagem no histórico."""
+        conn = ChatHistoryDB._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO chat_history (session_id, role, content) VALUES (?, ?, ?)", (session_id, role, content))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_history(session_id: str) -> List[Dict[str, str]]:
+        """Recupera o histórico de mensagens para uma sessão, incluindo o ID da mensagem."""
+        conn = ChatHistoryDB._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, role, content FROM chat_history WHERE session_id = ? ORDER BY timestamp", (session_id,))
+        # Modificado para retornar o ID, role e content
+        messages = [{"id": msg_id, "role": role, "content": content} for msg_id, role, content in cursor.fetchall()]
+        conn.close()
+        return messages
+
+class DynamicPersonality:
+    """Gerencia a persona e humor dinâmico da IA."""
+    @staticmethod
+    def get_current_persona() -> Tuple[str, str]:
+        """Retorna a persona e humor atuais."""
+        persona_name = "Mylle Alves"
+        persona_info = Config.PERSONAS[persona_name]
+        humor = random.choice(persona_info["humor"])
+        return persona_info["prompt"], humor
+
+class OpenAIAPI:
+    """Função para interação com a API."""
+    @staticmethod
+    def generate_response(prompt: str, messages: List[Dict]) -> str:
+        """Gera uma resposta da API de chat."""
+        headers = {"Content-Type": "application/json"}
+        # O histórico enviado para a API deve conter apenas role e content
+        # Filtrar mensagens apenas com 'role' e 'content' para a API
+        api_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages]
+
+        data = {
+            "model": "mistral:7b-instruct-q8_0", 
+            "messages": [
+                {"role": "system", "content": prompt}
+            ] + api_messages
+        }
+        
+        try:
+            response = requests.post(Config.API_URL, headers=headers, json=data, stream=True)
+            response.raise_for_status() 
+            
+            full_response = ""
+            for chunk in response.iter_content(chunk_size=None):
+                if chunk:
+                    decoded_chunk = chunk.decode('utf-8')
+                    # Tenta analisar o JSON para extrair o conteúdo
+                    try:
+                        json_data = json.loads(decoded_chunk)
+                        content = json_data.get("content", "")
+                        full_response += content
+                        yield content
+                    except json.JSONDecodeError:
+                        logger.error(f"Failed to decode JSON: {decoded_chunk}")
+                        continue
+                        
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Erro na requisição da API: {e}")
+            yield "Desculpe, estou com problemas para me conectar agora. Tente novamente mais tarde."
+            
+        return full_response
+
+# Funções auxiliares para o front-end
+def _get_or_create_session_id():
+    """Obtém ou cria um ID de sessão único."""
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())
+    return st.session_state.session_id
+
+def _handle_chat_input_callback():
+    """Processa a entrada do usuário e sinaliza para gerar uma resposta da IA."""
+    prompt_user = st.session_state.chat_input_key
+    if prompt_user:
+        session_id = _get_or_create_session_id()
+        ChatHistoryDB.save_message(session_id, "user", prompt_user)
+        
+        # Define um sinal para indicar que uma resposta da IA é pendente
+        st.session_state.ai_response_pending = True
+        
+        # Limpa o input após o envio
+        st.session_state.chat_input_key = ""
+        st.rerun() # Dispara uma re-execução para que a IA possa gerar a resposta
+
+
+def _show_chat_start_screen():
+    """Mostra tela de início do chat."""
+    col1, col2, col3 = st.columns([1,3,1])
+    with col2:
+        # Obter persona atual
+        persona_prompt, humor = DynamicPersonality.get_current_persona()
+        persona_name = persona_prompt.split(':')[0]
+        
+        st.markdown(f"""
+        <div style="text-align: center; margin: 50px 0;">
+            <img src="{Config.IMG_PROFILE}" width="140" style="
+                border-radius: 50%; 
+                border: 3px solid #ff66b3; 
+                box-shadow: 0 5px 15px rgba(255, 102, 179, 0.3);
+                animation: pulse 2s infinite;
+            ">
+            <h2 style="color: #ff66b3; margin-top: 20px;">{persona_name}</h2>
+            <p style="font-size: 1.1em; color: #aaa;">Especialista em conteúdo adulto premium 🔥</p>
+            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Aqui eu comando - você obedece 😈</p>
+            <p style="font-size: 0.8em; color: #888; margin-top: 15px;">{humor.split(':')[1] if ':' in humor else humor}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Botão para iniciar o chat
+        if st.button("😈 Iniciar Chat", use_container_width=True, type="primary"):
+            st.session_state.chat_started = True
+            st.rerun()
+
+def _show_chat_messages_and_input():
+    """Mostra o histórico de mensagens e o campo de entrada do chat."""
+    session_id = _get_or_create_session_id()
+    
+    # Recupera o histórico do banco de dados e exibe
+    history = ChatHistoryDB.get_history(session_id)
+    for message in history:
+        role = "user" if message["role"] == "user" else "assistant"
+        avatar = "👤" if role == "user" else Config.IMG_PROFILE
+        # Usar o ID do banco de dados como chave para cada st.chat_message
+        with st.chat_message(role, avatar=avatar, key=f"chat_message_{message['id']}"):
+            st.markdown(message["content"])
+
+    # Se houver uma resposta da IA pendente, gerá-la e exibi-la
+    if st.session_state.get("ai_response_pending", False):
+        persona_prompt, _ = DynamicPersonality.get_current_persona()
+        # O histórico precisa ser atualizado novamente para incluir a última mensagem do usuário
+        updated_history = ChatHistoryDB.get_history(session_id)
+        
+        with st.chat_message("assistant", avatar=Config.IMG_PROFILE, key=f"chat_message_ai_live_{time.time()}"):
+            full_response = st.write_stream(OpenAIAPI.generate_response(persona_prompt, updated_history))
+            ChatHistoryDB.save_message(session_id, "assistant", full_response)
+        
+        st.session_state.ai_response_pending = False
+        st.rerun() # Dispara uma re-execução para que a nova mensagem seja exibida corretamente do DB
+
+    # Campo de entrada do chat. Usamos um callback para processar a entrada.
+    st.chat_input(
+        "Diga algo, gatinho...", 
+        key="chat_input_key", 
+        on_submit=_handle_chat_input_callback
+    )
 
 # ======================
 # CONSTANTES E CONFIGURAÇÕES
@@ -2210,90 +2339,31 @@ class ChatService:
         st.rerun()
 
 # ======================
-# APLICAÇÃO PRINCIPAL
+# FLUXO PRINCIPAL DA APLICAÇÃO
 # ======================
+
 def main():
-    """Função principal da aplicação."""
-    try:
-        # Inicializar banco de dados
-        if 'db_conn' not in st.session_state:
-            st.session_state.db_conn = DatabaseService.init_db()
-        
-        conn = st.session_state.db_conn
-        
-        # Inicializar sessão
-        initialize_session()
-        ChatService.initialize_session(conn)
-        
-        # Verificação de idade
-        if not st.session_state.age_verified:
-            UiService.age_verification()
-            st.stop()
-        
-        # Setup da sidebar
-        UiService.setup_sidebar()
-        
-        # Efeito de conexão
-        if not st.session_state.connection_complete:
-            UiService.show_call_effect()
-            st.session_state.connection_complete = True
-            save_persistent_data()
-            st.rerun()
-        
-        # Tela de início do chat
-        if not st.session_state.chat_started and st.session_state.current_page == "chat":
-            ChatService._show_chat_start_screen()
-            st.stop()
-        
-        # Roteamento de páginas
-        if st.session_state.current_page == "home":
-            NewPages.show_home_page()
-        elif st.session_state.current_page == "gallery":
-            UiService.show_gallery_page()
-        elif st.session_state.current_page == "offers":
-            NewPages.show_offers_page()
-        else:  # chat
-            UiService.enhanced_chat_ui(conn)
-        
-        # Salvar dados persistentes
-        save_persistent_data()
-        
-    except Exception as e:
-        logger.error(f"Erro na aplicação principal: {e}")
-        st.error("Ocorreu um erro inesperado. Por favor, recarregue a página.")
+    """Função principal que gerencia o fluxo da aplicação."""
+    ChatHistoryDB.initialize()
 
-# Função auxiliar para tela de início do chat
-def _show_chat_start_screen():
-    """Mostra tela de início do chat."""
-    col1, col2, col3 = st.columns([1,3,1])
-    with col2:
-        # Obter persona atual
-        persona, humor = DynamicPersonality.get_current_persona()
-        persona_name = persona.split(':')[0]
-        
-        st.markdown(f"""
-        <div style="text-align: center; margin: 50px 0;">
-            <img src="{Config.IMG_PROFILE}" width="140" style="
-                border-radius: 50%; 
-                border: 3px solid #ff66b3; 
-                box-shadow: 0 5px 15px rgba(255, 102, 179, 0.3);
-                animation: pulse 2s infinite;
-            ">
-            <h2 style="color: #ff66b3; margin-top: 20px;">{persona_name}</h2>
-            <p style="font-size: 1.1em; color: #aaa;">Especialista em conteúdo adulto premium 🔥</p>
-            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Aqui eu comando - você obedece 😈</p>
-            <p style="font-size: 0.8em; color: #888; margin-top: 15px;">{humor.split(':')[1] if ':' in humor else humor}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        if st.button("💋 Iniciar Conversa", type="primary", use_container_width=True):
-            st.session_state.chat_started = True
-            save_persistent_data()
-            st.rerun()
+    # Inicializa o estado da sessão se não existir
+    if "session_id" not in st.session_state:
+        _get_or_create_session_id()
+    if "chat_started" not in st.session_state:
+        st.session_state.chat_started = False
+    
+    # A variável chat_input_key precisa ser inicializada para evitar KeyErrors no callback
+    if "chat_input_key" not in st.session_state:
+        st.session_state.chat_input_key = ""
+    
+    # Inicializa o estado para a resposta da IA pendente
+    if "ai_response_pending" not in st.session_state:
+        st.session_state.ai_response_pending = False
 
-# Adicionar função auxiliar ao ChatService
-ChatService._show_chat_start_screen = _show_chat_start_screen
+    if st.session_state.chat_started:
+        _show_chat_messages_and_input()
+    else:
+        _show_chat_start_screen()
 
 if __name__ == "__main__":
     main()
-
