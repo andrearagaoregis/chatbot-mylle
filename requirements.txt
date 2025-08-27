@@ -1,4 +1,6 @@
 streamlit
 requests
 pytz
+textblob
+sqlite3
 
