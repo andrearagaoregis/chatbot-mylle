@@ -170,7 +170,7 @@ class Config:
         "https://i.ibb.co/0jRMxrFB/BY-Admiregirls-su-Admiregirls-su-271.jpg"
     ]
     IMG_HOME_PREVIEWS = [
-        "https://ibb.co/DPSTsRMs",
+        "https://i.ibb.co/HLk31HP1/BY-Admiregirls-su-Admiregirls-su-089.jpg",
         "https://ibb.co/fGD0zvmY",
         "https://ibb.co/2YYh55Hf",
         "https://ibb.co/tSVc9Rzg"
