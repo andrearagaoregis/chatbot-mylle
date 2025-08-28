@@ -157,7 +157,7 @@ class Config:
     CHECKOUT_SAFADINHA = "https://app.pushinpay.com.br/#/service/pay/9FACD395-EE65-458E-9F7E-FED750CC9CA9"
     MAX_REQUESTS_PER_SESSION = 150 # Aumentado
     REQUEST_TIMEOUT = 45 # Aumentado
-    IMG_PROFILE = "https://i.ibb.co/bMynqzMh/BY-Admiregirls-su-Admiregirls-su-156.jpg"
+    IMG_PROFILE = "https://i.ibb.co/bMynqzM/BY-Admiregirls-su-Admiregirls-su-156.jpg"
     IMG_PREVIEW = "https://i.ibb.co/fGqCCyHL/preview-exclusive.jpg"
     PACK_IMAGES = {
         "TARADINHA": "https://i.ibb.co/sJJRttzM/BY-Admiregirls-su-Admiregirls-su-033.jpg",
@@ -1696,169 +1696,260 @@ class NewPages:
                 save_persistent_data()
                 st.rerun()
 
+    # ===============================================
+    # SESSÃO DE PACOTES VIP TOTALMENTE REFEITA
+    # ===============================================
     @staticmethod
     def show_offers_page() -> None:
-        """Página de ofertas ultra melhorada."""
+        """Página de ofertas ultra melhorada para máxima conversão."""
+
+        # Estilos CSS específicos para a página de ofertas
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: #ff66b3; display: inline-block; padding-bottom: 5px;">
-                🎁 Packs VIP Exclusivos
-            </h2>
-            <p style="color: #aaa; margin-top: 5px;">Escolha como você quer me ver... 😈</p>
-        </div>
+        <style>
+            @keyframes pulse-border {
+                0% { border-color: #9400d3; box-shadow: 0 0 15px #9400d3; }
+                50% { border-color: #ff1493; box-shadow: 0 0 25px #ff1493; }
+                100% { border-color: #9400d3; box-shadow: 0 0 15px #9400d3; }
+            }
+            .offer-card {
+                background: linear-gradient(145deg, #2a004f, #1e0033);
+                border: 2px solid #4a148c;
+                border-radius: 20px;
+                padding: 1.5rem;
+                text-align: center;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .offer-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            }
+            .offer-card-highlighted {
+                animation: pulse-border 3s infinite;
+                transform: scale(1.05);
+            }
+            .offer-card-highlighted:hover {
+                transform: scale(1.08) translateY(-10px);
+            }
+            .offer-tag {
+                background: linear-gradient(45deg, #ff1493, #ff66b3);
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.8em;
+                font-weight: bold;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+            .offer-tag-highlight {
+                background: linear-gradient(45deg, #f093fb, #f5576c);
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                padding: 8px 15px;
+                transform: rotate(15deg);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            }
+            .offer-card img {
+                width: 100%;
+                height: 160px;
+                object-fit: cover;
+                border-radius: 12px;
+                margin-bottom: 15px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            }
+            .offer-card h3 {
+                margin: 10px 0;
+                font-size: 1.8em;
+            }
+            .offer-card .description {
+                color: #ccc;
+                font-size: 0.9em;
+                min-height: 40px;
+                margin-bottom: 15px;
+            }
+            .price-section {
+                margin: 20px 0;
+            }
+            .price-section .original-price {
+                color: #888;
+                text-decoration: line-through;
+                font-size: 1em;
+            }
+            .price-section .current-price {
+                font-size: 2.2em;
+                font-weight: bold;
+            }
+            .benefits-list {
+                text-align: left;
+                margin: 20px 0;
+                padding-left: 10px;
+                font-size: 0.95em;
+                color: #ddd;
+                flex-grow: 1; /* Garante que o botão fique no final */
+            }
+            .benefits-list p {
+                margin: 8px 0;
+            }
+            .guarantee-box {
+                background: rgba(0, 0, 0, 0.2);
+                padding: 20px;
+                border-radius: 15px;
+                text-align: center;
+                margin: 30px 0;
+                border: 1px solid rgba(255,102,179,0.2);
+            }
+            .guarantee-items {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin-top: 15px;
+                flex-wrap: wrap; /* Para telas menores */
+            }
+            .guarantee-item {
+                text-align: center;
+                color: #ccc;
+                font-size: 0.9em;
+            }
+            .guarantee-item span {
+                font-size: 2em;
+                display: block;
+                margin-bottom: 5px;
+            }
+        </style>
         """, unsafe_allow_html=True)
 
-        # Oferta especial dinâmica
-        discount_percentage = random.choice([15, 20, 25, 30])
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #ff66b3; font-weight: 800; text-shadow: 0 0 10px rgba(255,102,179,0.5);">
+                💎 Acesso VIP ao Meu Paraíso 💎
+            </h1>
+            <p style="color: #ccc; margin-top: 5px; font-size: 1.1em;">
+                Escolha seu ticket de entrada e venha se perder comigo... 😈
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Oferta especial
+        discount_percentage = random.choice([25, 30, 35])
         st.markdown(f"""
         <div style="
-            background: linear-gradient(45deg, #ff1493, #9400d3);
+            background: linear-gradient(90deg, #ff1493, #9400d3);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 1rem;
+            border-radius: 12px;
             text-align: center;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
+            margin-bottom: 40px;
+            border: 2px solid #ff66b3;
+            box-shadow: 0 0 20px rgba(255,20,147,0.5);
         ">
-            <h3 style="margin: 0;">🔥 OFERTA ESPECIAL - {discount_percentage}% OFF</h3>
-            <p style="margin: 5px 0 0; font-size: 0.9em;">Válida apenas hoje! Não perca essa chance única.</p>
+            <h3 style="margin: 0; font-weight: bold; text-transform: uppercase;">
+                🔥 OFERTA RELÂMPAGO: ATÉ {discount_percentage}% OFF HOJE! 🔥
+            </h3>
+            <p style="margin: 5px 0 0; font-size: 0.9em;">Acesso imediato após a compra. Não deixe para depois, amor...</p>
         </div>
         """, unsafe_allow_html=True)
 
         packages = [
             {
                 "name": "TARADINHA",
-                "price": "R$ 29,99",
-                "original_price": "R$ 39,99",
+                "price": "R$ 29,99", "original_price": "R$ 39,99",
                 "benefits": ["15 fotos exclusivas", "15 vídeos quentes", "Acesso por 30 dias", "Suporte prioritário"],
                 "color": "#ff66b3",
-                "link": Config.CHECKOUT_TARADINHA,
-                "image": Config.PACK_IMAGES["TARADINHA"],
-                "tag": "🔥 Mais Popular",
-                "description": "Perfeito para começar a me conhecer melhor..."
+                "link": Config.CHECKOUT_TARADINHA, "image": Config.PACK_IMAGES["TARADINHA"],
+                "tag": "🔥 Iniciação",
+                "description": "Perfeito para sentir um gostinho do que eu posso te oferecer...",
+                "highlight": False
             },
             {
                 "name": "MOLHADINHA",
-                "price": "R$ 49,99", 
-                "original_price": "R$ 69,99",
-                "benefits": ["25 fotos sensuais", "25 vídeos especiais", "Acesso por 60 dias", "Conteúdo 4K", "Chat prioritário"],
+                "price": "R$ 49,99", "original_price": "R$ 69,99",
+                "benefits": ["<b>+ de 50 itens</b>", "Fotos e Vídeos em 4K", "Acesso por 60 dias", "Chat prioritário", "<b>Conteúdo novo toda semana</b>"],
                 "color": "#9400d3",
-                "link": Config.CHECKOUT_MOLHADINHA,
-                "image": Config.PACK_IMAGES["MOLHADINHA"],
-                "tag": "💎 Premium",
-                "description": "Para quem quer mais intensidade e qualidade..."
+                "link": Config.CHECKOUT_MOLHADINHA, "image": Config.PACK_IMAGES["MOLHADINHA"],
+                "tag": "💎 Mais Vantajoso",
+                "description": "Para quem quer mais intensidade e a melhor qualidade...",
+                "highlight": True
             },
             {
                 "name": "SAFADINHA",
-                "price": "R$ 69,99",
-                "original_price": "R$ 99,99",
-                "benefits": ["40 fotos ultra-exclusivas", "40 vídeos premium", "Acesso vitalício", "Conteúdo 4K", "Updates gratuitos", "Conteúdo personalizado"],
+                "price": "R$ 69,99", "original_price": "R$ 99,99",
+                "benefits": ["<b>Acesso Vitalício</b>", "<b>+ de 100 itens</b>", "Tudo do Premium", "Updates gratuitos", "<b>Grupo VIP no Telegram</b>"],
                 "color": "#ff0066",
-                "link": Config.CHECKOUT_SAFADINHA,
-                "image": Config.PACK_IMAGES["SAFADINHA"],
-                "tag": "👑 VIP",
-                "description": "A experiência completa e sem limites..."
+                "link": Config.CHECKOUT_SAFADINHA, "image": Config.PACK_IMAGES["SAFADINHA"],
+                "tag": "👑 Acesso Total",
+                "description": "A experiência definitiva. Você terá acesso a tudo, para sempre...",
+                "highlight": False
             }
         ]
 
         cols = st.columns(3)
         for idx, (col, package) in enumerate(zip(cols, packages)):
             with col:
+                highlight_class = "offer-card-highlighted" if package.get("highlight") else ""
+                benefits_html = "".join([f'<p>✅ {benefit}</p>' for benefit in package['benefits']])
+                
                 st.markdown(f"""
-                <div style="
-                    background: rgba(30, 0, 51, 0.3);
-                    border: 2px solid {package['color']};
-                    border-radius: 15px;
-                    padding: 20px;
-                    text-align: center;
-                    position: relative;
-                    transition: transform 0.3s ease;
-                    height: 100%;
-                ">
-                    <div style="
-                        background: {package['color']};
-                        color: white;
-                        padding: 5px 10px;
-                        border-radius: 15px;
-                        font-size: 0.8em;
-                        font-weight: bold;
-                        margin-bottom: 15px;
-                        display: inline-block;
-                    ">
-                        {package['tag']}
+                <div class="offer-card {highlight_class}">
+                    <div>
+                        {'<div class="offer-tag offer-tag-highlight">{package["tag"]}</div>' if package.get("highlight") else f'<div class="offer-tag">{package["tag"]}</div>'}
+                        
+                        <img src="{package['image']}">
+                        
+                        <h3 style="color: {package['color']};">
+                            {package['name']}
+                        </h3>
+                        
+                        <p class="description">
+                            {package['description']}
+                        </p>
+                        
+                        <div class="price-section">
+                            <span class="original-price">{package['original_price']}</span>
+                            <br>
+                            <span class="current-price" style="color: {package['color']};">
+                                {package['price']}
+                            </span>
+                        </div>
+                        
+                        <div class="benefits-list">
+                            {benefits_html}
+                        </div>
                     </div>
-                    
-                    <img src="{package['image']}" style="
-                        width: 100%;
-                        height: 150px;
-                        object-fit: cover;
-                        border-radius: 10px;
-                        margin-bottom: 15px;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                    ">
-                    
-                    <h3 style="color: {package['color']}; margin: 10px 0;">
-                        PACK {package['name']}
-                    </h3>
-                    
-                    <p style="color: #aaa; font-size: 0.9em; margin-bottom: 15px;">
-                        {package['description']}
-                    </p>
-                    
-                    <div style="margin: 15px 0;">
-                        <span style="color: #888; text-decoration: line-through; font-size: 0.9em;">
-                            {package['original_price']}
-                        </span>
-                        <br>
-                        <span style="color: {package['color']}; font-size: 1.5em; font-weight: bold;">
-                            {package['price']}
-                        </span>
-                    </div>
-                    
-                    <div style="text-align: left; margin: 15px 0;">
+                </div>
                 """, unsafe_allow_html=True)
                 
-                for benefit in package['benefits']:
-                    st.markdown(f"✅ {benefit}")
-                
-                st.markdown("</div>", unsafe_allow_html=True)
-                
-                if st.button(f"🚀 Comprar {package['name']}", 
+                button_text = "🔥 QUERO ESSE AGORA! 🔥" if package.get("highlight") else f"🚀 Pegar Acesso {package['name']}"
+                if st.button(button_text, 
                            key=f"buy_{package['name']}", 
                            use_container_width=True,
                            type="primary"):
                     js = f"window.open('{package['link']}', '_blank');"
                     st.components.v1.html(f"<script>{js}</script>")
-                
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        # Garantias e segurança
-        st.markdown("---")
-        st.markdown("""
-        <div style="
-            background: rgba(255, 102, 179, 0.05);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        ">
-            <h4 style="color: #ff66b3;">🛡️ Garantias e Segurança</h4>
-            <div style="display: flex; justify-content: space-around; margin-top: 15px;">
-                <div>
-                    <p style="font-size: 1.5em;">🔒</p>
-                    <p style="font-size: 0.9em; color: #aaa;">Pagamento Seguro</p>
+        
+        # Prova social e garantias
+        online_users = random.randint(12, 37)
+        st.markdown(f"""
+        <div class="guarantee-box">
+            <h4 style="color: #ff66b3;">🛡️ SUA COMPRA 100% SEGURA E DISCRETA</h4>
+            <p style="color: #00ff00; font-weight: bold;">🟢 {online_users} pessoas estão vendo os pacotes agora!</p>
+            <div class="guarantee-items">
+                <div class="guarantee-item">
+                    <span>🔒</span> Pagamento Seguro
                 </div>
-                <div>
-                    <p style="font-size: 1.5em;">⚡</p>
-                    <p style="font-size: 0.9em; color: #aaa;">Acesso Imediato</p>
+                <div class="guarantee-item">
+                    <span>⚡</span> Acesso Imediato
                 </div>
-                <div>
-                    <p style="font-size: 1.5em;">🎯</p>
-                    <p style="font-size: 0.9em; color: #aaa;">100% Exclusivo</p>
+                <div class="guarantee-item">
+                    <span>🤫</span> Compra Discreta
                 </div>
-                <div>
-                    <p style="font-size: 1.5em;">💬</p>
-                    <p style="font-size: 0.9em; color: #aaa;">Suporte 24h</p>
+                <div class="guarantee-item">
+                    <span>💬</span> Suporte 24h
                 </div>
             </div>
         </div>
