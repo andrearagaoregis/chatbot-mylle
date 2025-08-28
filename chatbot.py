@@ -165,15 +165,15 @@ class Config:
         "SAFADINHA": "https://i.ibb.co/GvqtJ17h/BY-Admiregirls-su-Admiregirls-su-194.jpg"
     }
     IMG_GALLERY = [
-        "https://i.ibb.co/VY42ZMST/BY-Admiregirls-su-Admiregirls-su-255.jpg",
-        "https://i.ibb.co/Q7s9Zwcr/BY-Admiregirls-su-Admiregirls-su-183.jpg",
-        "https://i.ibb.co/0jRMxrFB/BY-Admiregirls-su-Admiregirls-su-271.jpg"
+        "https://i.ibb.co/sh8QZ7C/BY-Admiregirls-su-Admiregirls-su-123.jpg",
+        "https://i.ibb.co/GvqtJ17h/BY-Admiregirls-su-Admiregirls-su-194.jpg",
+        "https://i.ibb.co/HLk31HP1/BY-Admiregirls-su-Admiregirls-su-089.jpg"
     ]
     IMG_HOME_PREVIEWS = [
-        "https://i.ibb.co/5Gfw3hQ/home-prev-1.jpg",
-        "https://i.ibb.co/vkXch6N/home-prev-2.jpg",
-        "https://i.ibb.co/v4s5fnW/home-prev-3.jpg",
-        "https://i.ibb.co/7gVtGkz/home-prev-4.jpg"
+        "https://i.ibb.co/0jRMxrFB/BY-Admiregirls-su-Admiregirls-su-271.jpg",
+        "https://i.ibb.co/sJJRttzM/BY-Admiregirls-su-Admiregirls-su-033.jpg",
+        "https://i.ibb.co/VY42ZMST/BY-Admiregirls-su-Admiregirls-su-255.jpg",
+        "https://i.ibb.co/Q7s9Zwcr/BY-Admiregirls-su-Admiregirls-su-183.jpg"
     ]
     SOCIAL_LINKS = {
         "instagram": "https://instagram.com/myllealves",
