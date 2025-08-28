@@ -946,7 +946,7 @@ class ApiService:
         if "cta" not in response:
             response["cta"] = {"show": False}
         elif response["cta"].get("show") and not response["cta"].get("label"):
-            response["cta"]["label"] = "🎁 Ver Conteúdo"
+            response["cta"]["label"] = "🎁 pacotes vip"
             response["cta"]["target"] = "offers"
         
         return response
