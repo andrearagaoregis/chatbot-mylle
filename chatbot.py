@@ -1255,6 +1255,30 @@ class UiService:
                     st.rerun()
 
 # ... (Continuação do código será adicionada na próxima parte)
+    # NOVA FUNÇÃO PARA SIMULAR GRAVAÇÃO
+    @staticmethod
+    def show_recording_effect(duration: float = 2.5):
+        """Mostra uma animação de 'gravando áudio'."""
+        placeholder = st.empty()
+        start_time = time.time()
+        while time.time() - start_time < duration:
+            dots = "." * (int((time.time() - start_time) * 2) % 4)
+            placeholder.markdown(f"""
+            <div style="
+                color: #ff66b3;
+                font-size: 0.9em;
+                padding: 8px 12px;
+                border-radius: 15px;
+                background: rgba(255, 102, 179, 0.1);
+                display: inline-block;
+                margin-left: 10px;
+                font-style: italic;
+            ">
+                🎙️ Gravando áudio{dots}
+            </div>
+            """, unsafe_allow_html=True)
+            time.sleep(0.3)
+        placeholder.empty()
 
 
     @staticmethod
@@ -1874,30 +1898,22 @@ class ChatService:
 
     @staticmethod
     def _send_welcome_message(conn: sqlite3.Connection):
-        """Envia mensagem de boas-vindas personalizada."""
-        # Obter informações do usuário
+        """Envia mensagem de boas-vindas personalizada com simulação de gravação."""
         user_id = get_user_id()
         learning_engine = LearningEngine()
         user_profile = learning_engine.get_user_profile(user_id)
         
-        # Personalizar mensagem baseada na hora e perfil
         now = datetime.now()
         hour = now.hour
         
-        if user_profile and user_profile.get('name'):
-            name_part = f", {user_profile['name']}"
-        else:
-            name_part = ""
+        name_part = f", {user_profile['name']}" if user_profile and user_profile.get('name') else ""
         
         if 6 <= hour < 12:
-            greeting = f"Bom dia{name_part}! ☀️"
-            audio_key = "bom_dia_nao_sou_fake"
+            greeting, audio_key = f"Bom dia{name_part}! ☀️", "bom_dia_nao_sou_fake"
         elif 12 <= hour < 18:
-            greeting = f"Boa tarde{name_part}! 🌅"
-            audio_key = "boa_tarde_nao_sou_fake"
+            greeting, audio_key = f"Boa tarde{name_part}! 🌅", "boa_tarde_nao_sou_fake"
         else:
-            greeting = f"Boa noite{name_part}! 🌙"
-            audio_key = "boa_noite_nao_sou_fake"
+            greeting, audio_key = f"Boa noite{name_part}! 🌙", "boa_noite_nao_sou_fake"
         
         opening_messages = [
             f"{greeting} Finalmente chegou até mim! Como me achou, gostoso? 😈",
@@ -1905,27 +1921,10 @@ class ChatService:
             f"{greeting} Caiu direto na toca da raposa, hein? De onde você é? 👀"
         ]
         
-        # Simular delay de digitação
-        time.sleep(2)
-        typing_container = st.empty()
-        typing_container.markdown("""
-        <div style="
-            color: #888;
-            font-size: 0.8em;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.05);
-            display: inline-block;
-            margin-left: 10px;
-            vertical-align: middle;
-            font-style: italic;
-        ">
-            Digitando...
-        </div>
-        """, unsafe_allow_html=True)
-        
-        time.sleep(2)
-        typing_container.empty()
+        # MODIFICAÇÃO APLICADA: Simular gravação e digitação
+        with st.chat_message("assistant", avatar=Config.IMG_PROFILE):
+            UiService.show_recording_effect()
+            ApiService()._show_status_effect(st.empty(), "typing")
         
         initial_message = {
             "role": "assistant",
@@ -1941,6 +1940,8 @@ class ChatService:
             conn, user_id, st.session_state.session_id,
             "assistant", initial_message["content"]
         )
+        # Força o rerender para mostrar a mensagem final
+        st.rerun()
 
     @staticmethod
     def format_conversation_history(messages: List[Dict], max_messages: int = 10) -> str:
@@ -2146,7 +2147,8 @@ class ChatService:
                                 key=f"chat_button_{time.time()}",
                                 use_container_width=True,
                                 type="primary"):
-                        st.session_state.current_page = cta_data.get("target", "offers")
+                        # MODIFICAÇÃO APLICADA AQUI
+                        st.session_state.current_page = "offers"
                         save_persistent_data()
                         st.rerun()
             
