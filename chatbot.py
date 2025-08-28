@@ -157,7 +157,7 @@ class Config:
     CHECKOUT_SAFADINHA = "https://app.pushinpay.com.br/#/service/pay/9FACD395-EE65-458E-9F7E-FED750CC9CA9"
     MAX_REQUESTS_PER_SESSION = 150 # Aumentado
     REQUEST_TIMEOUT = 45 # Aumentado
-    IMG_PROFILE = "https://i.ibb.co/bMynqzM/BY-Admiregirls-su-Admiregirls-su-156.jpg"
+    IMG_PROFILE = "https://i.ibb.co/bMynqzMh/BY-Admiregirls-su-Admiregirls-su-156.jpg"
     IMG_PREVIEW = "https://i.ibb.co/fGqCCyHL/preview-exclusive.jpg"
     PACK_IMAGES = {
         "TARADINHA": "https://i.ibb.co/sJJRttzM/BY-Admiregirls-su-Admiregirls-su-033.jpg",
@@ -1764,83 +1764,73 @@ class NewPages:
         cols = st.columns(3)
         for idx, (col, package) in enumerate(zip(cols, packages)):
             with col:
-                # ===============================================
-                # CORREÇÃO APLICADA AQUI
-                # ===============================================
-                # 1. Construir a lista de benefícios como uma string HTML
-                benefits_html = "".join([f'<p style="margin: 5px 0; color: #ddd;">✅ {benefit}</p>' for benefit in package['benefits']])
-                
-                # 2. Unificar todo o HTML do card em um único st.markdown
                 st.markdown(f"""
                 <div style="
-                    background: rgba(30, 0, 51, 0.5);
+                    background: rgba(30, 0, 51, 0.3);
                     border: 2px solid {package['color']};
                     border-radius: 15px;
                     padding: 20px;
                     text-align: center;
+                    position: relative;
+                    transition: transform 0.3s ease;
                     height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
                 ">
-                    <div>
-                        <div style="
-                            background: {package['color']};
-                            color: white;
-                            padding: 5px 10px;
-                            border-radius: 15px;
-                            font-size: 0.8em;
-                            font-weight: bold;
-                            margin-bottom: 15px;
-                            display: inline-block;
-                        ">
-                            {package['tag']}
-                        </div>
-                        
-                        <img src="{package['image']}" style="
-                            width: 100%;
-                            height: 150px;
-                            object-fit: cover;
-                            border-radius: 10px;
-                            margin-bottom: 15px;
-                            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                        ">
-                        
-                        <h3 style="color: {package['color']}; margin: 10px 0;">
-                            PACK {package['name']}
-                        </h3>
-                        
-                        <p style="color: #aaa; font-size: 0.9em; margin-bottom: 15px; min-height: 40px;">
-                            {package['description']}
-                        </p>
-                        
-                        <div style="margin: 15px 0;">
-                            <span style="color: #888; text-decoration: line-through; font-size: 0.9em;">
-                                {package['original_price']}
-                            </span>
-                            <br>
-                            <span style="color: {package['color']}; font-size: 1.5em; font-weight: bold;">
-                                {package['price']}
-                            </span>
-                        </div>
-                        
-                        <div style="text-align: left; margin: 20px 0; padding-left: 10px;">
-                            {benefits_html}
-                        </div>
+                    <div style="
+                        background: {package['color']};
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 15px;
+                        font-size: 0.8em;
+                        font-weight: bold;
+                        margin-bottom: 15px;
+                        display: inline-block;
+                    ">
+                        {package['tag']}
                     </div>
-                </div>
+                    
+                    <img src="{package['image']}" style="
+                        width: 100%;
+                        height: 150px;
+                        object-fit: cover;
+                        border-radius: 10px;
+                        margin-bottom: 15px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    ">
+                    
+                    <h3 style="color: {package['color']}; margin: 10px 0;">
+                        PACK {package['name']}
+                    </h3>
+                    
+                    <p style="color: #aaa; font-size: 0.9em; margin-bottom: 15px;">
+                        {package['description']}
+                    </p>
+                    
+                    <div style="margin: 15px 0;">
+                        <span style="color: #888; text-decoration: line-through; font-size: 0.9em;">
+                            {package['original_price']}
+                        </span>
+                        <br>
+                        <span style="color: {package['color']}; font-size: 1.5em; font-weight: bold;">
+                            {package['price']}
+                        </span>
+                    </div>
+                    
+                    <div style="text-align: left; margin: 15px 0;">
                 """, unsafe_allow_html=True)
                 
-                # 3. O botão de compra fica fora do markdown, mas dentro da coluna
+                for benefit in package['benefits']:
+                    st.markdown(f"✅ {benefit}")
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+                
                 if st.button(f"🚀 Comprar {package['name']}", 
                            key=f"buy_{package['name']}", 
                            use_container_width=True,
                            type="primary"):
                     js = f"window.open('{package['link']}', '_blank');"
                     st.components.v1.html(f"<script>{js}</script>")
-        # ===============================================
-        # FIM DA CORREÇÃO
-        # ===============================================
+                
+                st.markdown("</div>", unsafe_allow_html=True)
 
         # Garantias e segurança
         st.markdown("---")
@@ -2030,7 +2020,7 @@ class ChatService:
                                 padding: 12px;
                                 border-radius: 18px 18px 18px 0;
                                 margin: 5px 0;
-                                boxShadow: 0 2px 5px rgba(0,0,0,0.1);
+                                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
                             ">
                                 {msg["content"]}
                             </div>
