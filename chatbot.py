@@ -1482,7 +1482,7 @@ class UiService:
         cols = st.columns(4)
         shortcuts = [
             ("🏠 Início", "home"),
-            ("📸 Preview", "gallery"),
+            ("📸 Prévias", "gallery"),
             ("🎁 Packs", "offers"),
             ("🔄 Limpar", "clear")
         ]
