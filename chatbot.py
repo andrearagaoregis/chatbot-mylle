@@ -1254,7 +1254,6 @@ class UiService:
                     save_persistent_data()
                     st.rerun()
 
-# ... (Continuação do código será adicionada na próxima parte)
     # NOVA FUNÇÃO PARA SIMULAR GRAVAÇÃO
     @staticmethod
     def show_recording_effect(duration: float = 2.5):
@@ -1921,7 +1920,7 @@ class ChatService:
             f"{greeting} Caiu direto na toca da raposa, hein? De onde você é? 👀"
         ]
         
-        # MODIFICAÇÃO APLICADA: Simular gravação e digitação
+        # MODIFICAÇÃO APLICADA: Simular gravação e digitação antes de enviar
         with st.chat_message("assistant", avatar=Config.IMG_PROFILE):
             UiService.show_recording_effect()
             ApiService()._show_status_effect(st.empty(), "typing")
@@ -2008,7 +2007,9 @@ class ChatService:
                                                 key=f"cta_button_{hash(msg['content'])}",
                                                 use_container_width=True,
                                                 type="primary"):
-                                        # MODIFICAÇÃO APLICADA AQUI
+                                        # ===============================================
+                                        # MODIFICAÇÃO APLICADA AQUI: Força o destino para a página de ofertas
+                                        # ===============================================
                                         st.session_state.current_page = "offers"
                                         save_persistent_data()
                                         st.rerun()
@@ -2147,7 +2148,9 @@ class ChatService:
                                 key=f"chat_button_{time.time()}",
                                 use_container_width=True,
                                 type="primary"):
-                        # MODIFICAÇÃO APLICADA AQUI
+                        # ===============================================
+                        # MODIFICAÇÃO APLICADA AQUI: Força o destino para a página de ofertas
+                        # ===============================================
                         st.session_state.current_page = "offers"
                         save_persistent_data()
                         st.rerun()
