@@ -1,0 +1,5 @@
+streamlit
+requests
+pytz
+textblob
+nltk
